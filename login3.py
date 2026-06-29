@@ -9,7 +9,7 @@ from appointment_form import Appointment
 from billing_form import Billing
 import hashlib
 import requests
-
+import database
 
 class CustomEntry(ttk.Entry):
     def __init__(self, master=None, **kwargs):
@@ -21,9 +21,10 @@ def set_custom_style():
     style.configure('Custom.TEntry', padding=(10, 5), font=('Helvetica', 14), foreground='black')
     style.configure('Custom.TButton', padding=(10, 5), font=('Helvetica', 12), foreground='white', background='#4CAF50')
 
-conn = sqlite3.connect("HospitalDB.db")
+# Initialize the database on startup
+database.initialize_db()
+conn = database.get_connection()
 print("DATABASE CONNECTION SUCCESSFUL")
-# ... (previous code)
 
 class EditAppointmentForm:
     def __init__(self, master, appointment_id, view_appointments_callback):
@@ -290,14 +291,14 @@ class HospitalMenu:
         self.master = master
         self.master.title("HOSPITAL MANAGEMENT SYSTEM")
         self.master.geometry("800x900+0+0")
-        self.master.config(bg="#d3d3d3")
-        self.frame = Frame(self.master, bg="#d3d3d3")
+        self.master.config(bg="#E9ECF3")
+        self.frame = Frame(self.master, bg="#E9ECF3")
         self.frame.pack()
 
-        self.lblTitle = Label(self.frame, text="Main Menu", font=("Impact", 20), bg="#d3d3d3", fg="black")
+        self.lblTitle = Label(self.frame, text="Main Menu", font=("Impact", 30), bg="#E9ECF3", fg="#1a237e")
         self.lblTitle.grid(row=0, column=0, columnspan=2, pady=50)
 
-        self.LoginFrame = Frame(self.frame, width=400, height=80, relief="ridge", bg="#d3d3d3", bd=20)
+        self.LoginFrame = Frame(self.frame, width=400, height=80, relief="flat", bg="#E9ECF3")
         self.LoginFrame.grid(row=1, column=0)
         self.button8 = Button(self.LoginFrame, text="View Employees", width=30, font="Arial", fg="white",
                               bg="#740048", pady=7, command=self.View_Employees)
@@ -692,38 +693,60 @@ class LoginPage:
         password = self.Password.get()
         account_name = self.AccountName.get()
 
+        if not username or not password:
+            tk.messagebox.showerror("Login Failed", "Username and Password are required.")
+            return
+
+        # Attempt to login using API first
         try:
             auth_token = self.get_auth_token(username, password, account_name)
-
             if auth_token:
-                self.newWindow = Toplevel(self.master)
-                self.app = HospitalMenu(self.newWindow)
-                self.master.withdraw()
-                print(f"Login successful for {username}")
-            else:
-                tk.messagebox.showerror("Login Failed", "Invalid username, password, or account name")
-
+                self._open_menu(username)
+                return
         except Exception as e:
-            tk.messagebox.showerror("Login Failed", f"Error: {e}")
+            print(f"API Login failed: {e}. Falling back to local database...")
+
+        # Fallback to local DB login
+        try:
+            local_conn = database.get_connection()
+            cursor = local_conn.cursor()
+            combine_user = username + ":" + password
+            md5_password = hashlib.md5(combine_user.encode()).hexdigest()
+            
+            cursor.execute("SELECT * FROM admin WHERE username=? AND password=?", (username, md5_password))
+            result = cursor.fetchone()
+            
+            if result:
+                self._open_menu(username)
+            else:
+                tk.messagebox.showerror("Login Failed", "Invalid username, password, or account name (Local Auth)")
+        except sqlite3.Error as e:
+            tk.messagebox.showerror("Error", f"Database error: {e}")
+        finally:
+            local_conn.close()
+
+    def _open_menu(self, username):
+        self.newWindow = Toplevel(self.master)
+        self.app = HospitalMenu(self.newWindow)
+        self.master.withdraw()
+        print(f"Login successful for {username}")
 
     def get_auth_token(self, username, password, account_name):
         url = 'https://api.bsnlpbx.com/v2/user_auth'
-        print(username, password, account_name)
         headers = {'Content-Type': 'application/json'}
         combine_user = username + ":" + password
-        md5_password = hashlib.md5(combine_user.encode()).hexdigest()  # Assuming MD5 hash is required
+        md5_password = hashlib.md5(combine_user.encode()).hexdigest()
 
-        print(md5_password)
         data = {"data": {"credentials": md5_password, "account_name": account_name}}
-
-        response = requests.put(url, headers=headers, json=data)
+        
+        # Adding a timeout so we don't hang if the API is offline
+        response = requests.put(url, headers=headers, json=data, timeout=5)
 
         if not response.ok:
-            raise Exception('Failed to update authentication')
+            raise Exception(f'Failed to update authentication: {response.status_code}')
 
         json_data = response.json()
         auth_token = json_data.get('auth_token')
-
         return auth_token
 
     def Exit(self):

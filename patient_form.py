@@ -3,8 +3,9 @@ import tkinter.messagebox
 from tkinter import ttk
 import sqlite3
 from tkcalendar import DateEntry
+import database
 
-conn = sqlite3.connect("HospitalDB.db")
+conn = database.get_connection()
 print("DATABASE CONNECTION SUCCESSFUL")
 
 # Class for PATIENT REGISTRATION
@@ -13,8 +14,8 @@ class Patient:
         self.master = master
         self.master.title("HOSPITAL MANAGEMENT SYSTEM")
         self.master.geometry("1500x700+0+0")
-        self.master.config(bg="#d3d3d3")
-        self.frame = Frame(self.master, bg="#d3d3d3")
+        self.master.config(bg="#E9ECF3")
+        self.frame = Frame(self.master, bg="#E9ECF3")
         self.frame.pack()
 
         # =============ATTRIBUTES===========
@@ -31,32 +32,32 @@ class Patient:
 
         # ===============TITLE==========
         self.lblTitle = Label(self.frame, text="PATIENT REGISTRATION FORM", font="Helvetica 20 bold", fg="black",
-                              bg="#d3d3d3")
+                              bg="#E9ECF3")
         self.lblTitle.grid(row=0, column=0, columnspan=2, pady=50)
         # ==============FRAME==========
-        self.LoginFrame = Frame(self.frame, width=400, height=80, relief="ridge", bg="#d3d3d3", bd=20)
+        self.LoginFrame = Frame(self.frame, width=400, height=80, relief="ridge", bg="#E9ECF3", bd=20)
         self.LoginFrame.grid(row=1, column=0)
 
         # ===========LABELS=============
-        self.lblpatid = Label(self.LoginFrame, text="PATIENT ID", font="Helvetica 14 bold", fg="black", bg="#d3d3d3",
+        self.lblpatid = Label(self.LoginFrame, text="PATIENT ID", font="Helvetica 14 bold", fg="black", bg="#E9ECF3",
                               bd=22)
         self.lblpatid.grid(row=0, column=0)
         self.lblpatid = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.pat_ID)
         self.lblpatid.grid(row=0, column=1)
 
         self.lblPatname = Label(self.LoginFrame, text="PATIENT NAME", font="Helvetica 14 bold", fg="black",
-                                bg="#d3d3d3", bd=22)
+                                bg="#E9ECF3", bd=22)
         self.lblPatname.grid(row=1, column=0)
         self.lblPatname = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.pat_name)
         self.lblPatname.grid(row=1, column=1)
 
-        self.lblsex = Label(self.LoginFrame, text="SEX", font="Helvetica 14 bold", fg="black", bg="#d3d3d3", bd=22)
+        self.lblsex = Label(self.LoginFrame, text="SEX", font="Helvetica 14 bold", fg="black", bg="#E9ECF3", bd=22)
         self.lblsex.grid(row=2, column=0)
         self.lblsex = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.pat_sex)
         self.lblsex.grid(row=2, column=1)
 
         self.lblDOB = Label(self.LoginFrame, text="DOB (YYYY-MM-DD)", font="Helvetica 14 bold", fg="black",
-                            bg="#d3d3d3", bd=22)
+                            bg="#E9ECF3", bd=22)
         self.lblDOB.grid(row=3, column=0)
         
         # Use DateEntry widget for the DOB entry
@@ -64,7 +65,7 @@ class Patient:
                                    date_pattern='yyyy-mm-dd')
         self.dob_entry.grid(row=3, column=1)
 
-        self.lblbgrp = Label(self.LoginFrame, text="BLOOD GROUP", font="Helvetica 14 bold", fg="black", bg="#d3d3d3",
+        self.lblbgrp = Label(self.LoginFrame, text="BLOOD GROUP", font="Helvetica 14 bold", fg="black", bg="#E9ECF3",
                              bd=22)
         self.lblbgrp.grid(row=4, column=0)
 
@@ -74,29 +75,29 @@ class Patient:
         self.lblbgrp.grid(row=4, column=1)
 
         self.lblCon = Label(self.LoginFrame, text="CONTACT NUMBER", font="Helvetica 14 bold", fg="black",
-                            bg="#d3d3d3", bd=22)
+                            bg="#E9ECF3", bd=22)
         self.lblCon.grid(row=0, column=2)
         self.lblCon = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.pat_contact)
         self.lblCon.grid(row=0, column=3)
 
         self.lblAlt = Label(self.LoginFrame, text="ALTERNATE CONTACT", font="Helvetica 14 bold", fg="black",
-                            bg="#d3d3d3", bd=22)
+                            bg="#E9ECF3", bd=22)
         self.lblAlt.grid(row=1, column=2)
         self.lblAlt = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.pat_contactalt)
         self.lblAlt.grid(row=1, column=3)
 
-        self.lbleid = Label(self.LoginFrame, text="EMAIL", font="Helvetica 14 bold", fg="black", bg="#d3d3d3", bd=22)
+        self.lbleid = Label(self.LoginFrame, text="EMAIL", font="Helvetica 14 bold", fg="black", bg="#E9ECF3", bd=22)
         self.lbleid.grid(row=2, column=2)
         self.lbleid = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.pat_email)
         self.lbleid.grid(row=2, column=3)
 
         self.lbldoc = Label(self.LoginFrame, text="CONSULTING TEAM / DOCTOR", font="Helvetica 14 bold", fg="black",
-                            bg="#d3d3d3", bd=22)
+                            bg="#E9ECF3", bd=22)
         self.lbldoc.grid(row=3, column=2)
         self.lbldoc = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.pat_CT)
         self.lbldoc.grid(row=3, column=3)
 
-        self.lbladd = Label(self.LoginFrame, text="ADDRESS", font="Helvetica 14 bold", fg="black", bg="#d3d3d3", bd=22)
+        self.lbladd = Label(self.LoginFrame, text="ADDRESS", font="Helvetica 14 bold", fg="black", bg="#E9ECF3", bd=22)
         self.lbladd.grid(row=4, column=2)
         self.lbladd = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.pat_address)
         self.lbladd.grid(row=4, column=3)
@@ -110,7 +111,7 @@ class Patient:
                                   bg="#AF006C", command=self.Exit)
         self.button_exit.grid(row=5, column=2, pady=20)
         # Dropdown for Sex
-        self.lblsex = Label(self.LoginFrame, text="SEX", font="Helvetica 14 bold", fg="black", bg="#d3d3d3", bd=22)
+        self.lblsex = Label(self.LoginFrame, text="SEX", font="Helvetica 14 bold", fg="black", bg="#E9ECF3", bd=22)
         self.lblsex.grid(row=2, column=0)
 
         sex_options = ["Male", "Female", "Other"]

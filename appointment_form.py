@@ -4,9 +4,10 @@ from tkcalendar import Calendar  # Make sure to have tkcalendar module installed
 import sqlite3
 from datetime import datetime
 import tkinter as tk
+import database
 
 # Database connection
-conn = sqlite3.connect("HospitalDB.db")
+conn = database.get_connection()
 print("DATABASE CONNECTION SUCCESSFUL")
 
 # Class for booking appointment
@@ -15,8 +16,8 @@ class Appointment:
         self.master = master
         self.master.title("HOSPITAL MANAGEMENT SYSTEM")
         self.master.geometry("1500x700+0+0")
-        self.master.config(bg="#d3d3d3")
-        self.frame = Frame(self.master, bg="#d3d3d3")
+        self.master.config(bg="#E9ECF3")
+        self.frame = Frame(self.master, bg="#E9ECF3")
         self.frame.pack()
 
         # Attributes
@@ -28,50 +29,50 @@ class Appointment:
         self.des = StringVar()
 
         # Title
-        self.lblTitle = Label(self.frame, text="APPOINTMENT FORM", font="Helvetica 20 bold", bg="#d3d3d3")
+        self.lblTitle = Label(self.frame, text="APPOINTMENT FORM", font="Helvetica 20 bold", bg="#E9ECF3")
         self.lblTitle.grid(row=0, column=0, columnspan=2, pady=50)
 
         # Frame
-        self.LoginFrame = Frame(self.frame, width=400, height=80, relief="ridge", bg="#d3d3d3", bd=20)
+        self.LoginFrame = Frame(self.frame, width=400, height=80, relief="ridge", bg="#E9ECF3", bd=20)
         self.LoginFrame.grid(row=1, column=0)
 
         # Labels
-        self.lblpid_label = Label(self.LoginFrame, text="PATIENT ID", font="Helvetica 14 bold", bg="#d3d3d3", bd=22)
+        self.lblpid_label = Label(self.LoginFrame, text="PATIENT ID", font="Helvetica 14 bold", bg="#E9ECF3", bd=22)
         self.lblpid_label.grid(row=0, column=0)
         self.lblpid_entry = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.pat_ID)
         self.lblpid_entry.grid(row=0, column=1)
         self.lblpid_entry.delete(0, END)  #
 
-        self.lbldid = Label(self.LoginFrame, text="DOCTOR ID", font="Helvetica 14 bold", bg="#d3d3d3", bd=22)
+        self.lbldid = Label(self.LoginFrame, text="DOCTOR ID", font="Helvetica 14 bold", bg="#E9ECF3", bd=22)
         self.lbldid.grid(row=1, column=0)
         self.lbldid = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.emp_ID)
         self.lbldid.grid(row=1, column=1)
 
-        self.lblap = Label(self.LoginFrame, text="APPOINTMENT NO", font="Helvetica 14 bold", bg="#d3d3d3", bd=22)
+        self.lblap = Label(self.LoginFrame, text="APPOINTMENT NO", font="Helvetica 14 bold", bg="#E9ECF3", bd=22)
         self.lblap.grid(row=2, column=0)
         self.lblap = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.ap_no)
         self.lblap.grid(row=2, column=1)
 
         self.lblapt = Label(self.LoginFrame, text="APPOINTMENT TIME", font="Helvetica 14 bold",
-                            bg="#d3d3d3", bd=22)
+                            bg="#E9ECF3", bd=22)
         self.lblapt.grid(row=0, column=2)
         self.lblapt = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.ap_time)
         self.lblapt.grid(row=0, column=3)
 
         self.lblapd = Label(self.LoginFrame, text="APPOINTMENT DATE(YYYY-MM-DD)", font="Helvetica 14 bold",
-                            bg="#d3d3d3", bd=22)
+                            bg="#E9ECF3", bd=22)
         self.lblapd.grid(row=1, column=2)
         self.lblapd = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.ap_date)
         self.lblapd.grid(row=1, column=3)
         self.lblapd.bind("<Button-1>", self.open_calendar)  # Bind left mouse click event to open calendar
 
-        self.lbldes = Label(self.LoginFrame, text="DESCRIPTION", font="Helvetica 14 bold", bg="#d3d3d3", bd=22)
+        self.lbldes = Label(self.LoginFrame, text="DESCRIPTION", font="Helvetica 14 bold", bg="#E9ECF3", bd=22)
         self.lbldes.grid(row=2, column=2)
         self.lbldes = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.des)
         self.lbldes.grid(row=2, column=3)
 
         # Buttons
-        self.LoginFrame2 = Frame(self.frame, width=400, height=80, relief="ridge", bg="#d3d3d3", bd=20)
+        self.LoginFrame2 = Frame(self.frame, width=400, height=80, relief="ridge", bg="#E9ECF3", bd=20)
         self.LoginFrame2.grid(row=2, column=0)
 
         self.button2 = Button(self.LoginFrame2, text="SAVE", width=10, font="Helvetica 14 bold", bg="#AF006C",
@@ -149,26 +150,26 @@ class DEL_AP:
         self.master = master
         self.master.title("HOSPITAL MANAGEMENT SYSTEM")
         self.master.geometry("1500x700+0+0")
-        self.master.config(bg="#d3d3d3")
-        self.frame = Frame(self.master, bg="#d3d3d3")
+        self.master.config(bg="#E9ECF3")
+        self.frame = Frame(self.master, bg="#E9ECF3")
         self.frame.pack()
 
         self.de1_ap = StringVar()
-        self.lblTitle = Label(self.frame, text="DELETE APPOINTMENT WINDOW", font="Helvetica 20 bold", bg="#d3d3d3")
+        self.lblTitle = Label(self.frame, text="DELETE APPOINTMENT WINDOW", font="Helvetica 20 bold", bg="#E9ECF3")
         self.lblTitle.grid(row=0, column=0, columnspan=2, pady=50)
 
-        self.LoginFrame = Frame(self.frame, width=400, height=80, relief="ridge", bg="#d3d3d3", bd=20)
+        self.LoginFrame = Frame(self.frame, width=400, height=80, relief="ridge", bg="#E9ECF3", bd=20)
         self.LoginFrame.grid(row=1, column=0)
-        self.LoginFrame2 = Frame(self.frame, width=400, height=80, relief="ridge", bg="#d3d3d3", bd=20)
+        self.LoginFrame2 = Frame(self.frame, width=400, height=80, relief="ridge", bg="#E9ECF3", bd=20)
         self.LoginFrame2.grid(row=2, column=0)
 
         self.lblpatid = Label(self.LoginFrame, text="ENTER APPOINTMENT NO TO DELETE", font="Helvetica 14 bold",
-                              bg="#d3d3d3", bd=22)
+                              bg="#E9ECF3", bd=22)
         self.lblpatid.grid(row=0, column=0)
         self.lblpatid = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.de1_ap)
         self.lblpatid.grid(row=0, column=1)
 
-        self.DeleteB = Button(self.LoginFrame2, text="DELETE", width=10, font="Helvetica 14 bold", bg="#d3d3d3",
+        self.DeleteB = Button(self.LoginFrame2, text="DELETE", width=10, font="Helvetica 14 bold", bg="#E9ECF3",
                               command=self.DELETE_AP)
         self.DeleteB.grid(row=3, column=1)
 
@@ -189,26 +190,26 @@ class SEA_AP:
         self.master = master
         self.master.title("HOSPITAL MANAGEMENT SYSTEM")
         self.master.geometry("1500x700+0+0")
-        self.master.config(bg="#d3d3d3")
-        self.frame = Frame(self.master, bg="#d3d3d3")
+        self.master.config(bg="#E9ECF3")
+        self.frame = Frame(self.master, bg="#E9ECF3")
         self.frame.pack()
 
         self.entry = StringVar()
-        self.lblTitle = Label(self.frame, text="SEARCH APPOINTMENT WINDOW", font="Helvetica 20 bold", bg="#d3d3d3")
+        self.lblTitle = Label(self.frame, text="SEARCH APPOINTMENT WINDOW", font="Helvetica 20 bold", bg="#E9ECF3")
         self.lblTitle.grid(row=0, column=0, columnspan=2, pady=25)
 
-        self.LoginFrame = Frame(self.frame, width=400, height=80, relief="ridge", bg="#d3d3d3", bd=20)
+        self.LoginFrame = Frame(self.frame, width=400, height=80, relief="ridge", bg="#E9ECF3", bd=20)
         self.LoginFrame.grid(row=1, column=0)
-        self.LoginFrame2 = Frame(self.frame, width=400, height=80, relief="ridge", bg="#d3d3d3", bd=20)
+        self.LoginFrame2 = Frame(self.frame, width=400, height=80, relief="ridge", bg="#E9ECF3", bd=20)
         self.LoginFrame2.grid(row=2, column=0)
 
         self.lblpatid = Label(self.LoginFrame, text="ENTER DATE TO VIEW APPOINTMENTS(YYYY-MM-DD)",
-                              font="Helvetica 14 bold", bg="#d3d3d3", bd=22)
+                              font="Helvetica 14 bold", bg="#E9ECF3", bd=22)
         self.lblpatid.grid(row=0, column=0)
         self.lblpatid = Entry(self.LoginFrame, font="Helvetica 14 bold", bd=2, textvariable=self.entry)
         self.lblpatid.grid(row=0, column=1)
 
-        self.SearchB = Button(self.LoginFrame2, text="SEARCH", width=10, font="Helvetica 14 bold", bg="#d3d3d3",
+        self.SearchB = Button(self.LoginFrame2, text="SEARCH", width=10, font="Helvetica 14 bold", bg="#E9ECF3",
                               command=self.SEARCH_AP)
         self.SearchB.grid(row=0, column=1)
 
@@ -223,29 +224,29 @@ class SEA_AP:
                 'SELECT PATIENT_ID,NAME,AP_NO,EMP_ID,AP_DATE,AP_TIME FROM PATIENT NATURAL JOIN appointment where AP_DATE=?',
                 (ap,))
             for i in t:
-                l1 = Label(self.LoginFrame, text="PATIENT ID", font="Helvetica 14 bold", bg="#d3d3d3", bd=22)
+                l1 = Label(self.LoginFrame, text="PATIENT ID", font="Helvetica 14 bold", bg="#E9ECF3", bd=22)
                 l1.grid(row=1, column=0)
-                dis1 = Label(self.LoginFrame, font="Helvetica 14 bold", bd=2, bg="#d3d3d3", text=i[0])
+                dis1 = Label(self.LoginFrame, font="Helvetica 14 bold", bd=2, bg="#E9ECF3", text=i[0])
                 dis1.grid(row=1, column=1)
-                l2 = Label(self.LoginFrame, text="PATIENT NAME", font="Helvetica 14 bold", bg="#d3d3d3", bd=22)
+                l2 = Label(self.LoginFrame, text="PATIENT NAME", font="Helvetica 14 bold", bg="#E9ECF3", bd=22)
                 l2.grid(row=2, column=0)
-                dis2 = Label(self.LoginFrame, font="Helvetica 14 bold", bd=2, bg="#d3d3d3", text=i[1])
+                dis2 = Label(self.LoginFrame, font="Helvetica 14 bold", bd=2, bg="#E9ECF3", text=i[1])
                 dis2.grid(row=2, column=1)
 
-                l3 = Label(self.LoginFrame, text="APPOINTMENT NO", font="Helvetica 14 bold", bg="#d3d3d3", bd=22)
+                l3 = Label(self.LoginFrame, text="APPOINTMENT NO", font="Helvetica 14 bold", bg="#E9ECF3", bd=22)
                 l3.grid(row=3, column=0)
-                dis3 = Label(self.LoginFrame, font="Helvetica 14 bold", bg="#d3d3d3", bd=2, text=i[2])
+                dis3 = Label(self.LoginFrame, font="Helvetica 14 bold", bg="#E9ECF3", bd=2, text=i[2])
                 dis3.grid(row=3, column=1)
 
-                l4 = Label(self.LoginFrame, text="DOCTOR ID", font="Helvetica 14 bold", bg="#d3d3d3", bd=22)
+                l4 = Label(self.LoginFrame, text="DOCTOR ID", font="Helvetica 14 bold", bg="#E9ECF3", bd=22)
                 l4.grid(row=4, column=0)
-                dis4 = Label(self.LoginFrame, font="Helvetica 14 bold", bg="#d3d3d3", bd=2, text=i[3])
+                dis4 = Label(self.LoginFrame, font="Helvetica 14 bold", bg="#E9ECF3", bd=2, text=i[3])
                 dis4.grid(row=4, column=1)
 
-                l5 = Label(self.LoginFrame, text="APPOINTMENT TIME(HH:MM:SS)", font="Helvetica 14 bold", bg="#d3d3d3",
+                l5 = Label(self.LoginFrame, text="APPOINTMENT TIME(HH:MM:SS)", font="Helvetica 14 bold", bg="#E9ECF3",
                            bd=22)
                 l5.grid(row=5, column=0)
-                dis5 = Label(self.LoginFrame, font="Helvetica 14 bold", bg="#d3d3d3", bd=2, text=i[5])
+                dis5 = Label(self.LoginFrame, font="Helvetica 14 bold", bg="#E9ECF3", bd=2, text=i[5])
                 dis5.grid(row=5, column=1)
 
 
